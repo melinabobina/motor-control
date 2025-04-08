@@ -6,6 +6,7 @@
       Modified: April 7, 2025
       By: Letzy Mota
       Note: this codde might not fully work but it compiled so ill test the logic at a later date :p
+      What is left: starting height function and limit switch implementation
 
 */ 
 
@@ -107,17 +108,10 @@ void loop(){
     speed = Serial1.parseInt();
     direction = Serial1.parseInt();
 
-// execute motor instructions (5 pulses per configuration)
-    motorControl(rpos, cpos, direction, speed);
-    delay(10);
-    motorControl(rpos, cpos, direction, speed);
-    delay(10);
-    motorControl(rpos, cpos, direction, speed);
-    delay(10); 
-    motorControl(rpos, cpos, direction, speed);
-    delay(10);
-    motorControl(rpos, cpos, direction, speed);
-    delay(10);
+// execute motor instructions (10 pulses per configuration)
+      for(int i = 0; i < 10; i++){
+        motorControl(rpos, cpos, direction, speed);
+      }
   }
 
 }
