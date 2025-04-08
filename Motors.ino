@@ -48,7 +48,7 @@ struct configuration{
 
 void motorControl(int MotorNum, int Direction, int Delay);
 
-/* TO DO : create function to get all panels to starting height */
+/* TO DO : create function to get all panels to correct starting height */
 void startingHeight(void);
 
 // app input for all motors
@@ -106,7 +106,7 @@ void loop(){
     rpos = Serial1.parseInt();
     cpos = Serial1.parseInt();
     speed = Serial1.parseInt();
-    direction = Serial1.parseInt();
+    direction = Serial1.parseInt(); // 0 -> clockwise, 1-> counterclockwise 
 
 // execute motor instructions (10 pulses per configuration)
       for(int i = 0; i < 10; i++){
@@ -116,8 +116,8 @@ void loop(){
 
 }
 
+/* TO DO: implement limit switch operation in motor control function to keep panel in bounds */
 void motorControl(int rpos, int cpos, int Direction, int Delay){
-// for direction: 0 -> clockwise, 1-> counterclockwise 
 
   digitalWrite(MotorArr[rpos][cpos].DirPin, Direction);
 
