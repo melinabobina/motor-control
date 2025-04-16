@@ -2,11 +2,12 @@
 
       Motor Driver Program:
       Controls 3, 6, or 9 DM542T stepper motor drivers for the Nerual Kinetic Sculpture
+  
+      Modified: March 12, 2025
+      By: Letzy Mota and Karina Montero
 
       Modified: April 7, 2025
       By: Letzy Mota
-      Note: this codde might not fully work but it compiled so ill test the logic at a later date :p
-      What is left: starting height function and limit switch implementation
 
 */ 
 
@@ -40,21 +41,20 @@
 int PulPins[] = {PulPin0, PulPin1, PulPin2, PulPin3, PulPin4, PulPin5, PulPin6, PulPin7, PulPin8};
 int DirPins[] = {DirPin0, DirPin1, DirPin2, DirPin3, DirPin4, DirPin5, DirPin6, DirPin7, DirPin8};
 
-// configuration object containing all individual motor parameters the user can map
 struct configuration{
-  int PulPin;
-  int DirPin;
+  int PulPin; // controls speed
+  int DirPin; // controls direction
 };
 
-void motorControl(int MotorNum, int Direction, int Delay);
+void motorControl(int rpos, int cpos, int Direction, int Delay);
 
-/* TO DO : create function to get all panels to correct starting height */
+/* TO DO : create function to get all panels to starting height */
 void startingHeight(void);
 
 // app input for all motors
 int startHeight; 
-int rows; 
-int columns;
+int numRows; 
+int numColumns;
 
 // app input for individual motors
 int rpos; 
@@ -69,24 +69,24 @@ void setup(){
 // initialize UART communication (pin 19 -> RX1)
   Serial1.begin(9600); 
 
-// wait unitl data is received
+// wait until data is received
   while(!Serial1.available()){}
 
 // read configuration data
   startHeight = Serial1.parseInt();
-  rows = Serial1.parseInt();
-  columns = Serial1.parseInt();
+  numRows = Serial1.parseInt();
+  numColumns = Serial1.parseInt();
 
 // allocate memory for rows
-  MotorArr = new configuration*[rows];
+  MotorArr = new configuration*[numRows];
 // allocate memory for each column in each row
-  for(int i = 0; i < rows; i++){
-    MotorArr[i] = new configuration[columns];
+  for(int i = 0; i < numRows; i++){
+    MotorArr[i] = new configuration[numColumns];
   }
 
   int idx = 0;
-  for(int i = 0; i<rows; i++){
-    for(int j = 0; j<columns; j++){
+  for(int i = 0; i < numRows; i++){
+    for(int j = 0; j < numColumns; j++){
       MotorArr[i][j].PulPin = PulPins[idx]; // asign pulse pin to matrix poition
       MotorArr[i][j].DirPin = DirPins[idx]; // asign direction pin to matrix position
 
@@ -97,27 +97,29 @@ void setup(){
     }
   }
 
+// call starting height function here...
+
 }
 
 void loop(){
 
-  if(Serial1.available() >= 8){
 // read data
+  if(Serial1.available() >= 8){
     rpos = Serial1.parseInt();
     cpos = Serial1.parseInt();
     speed = Serial1.parseInt();
-    direction = Serial1.parseInt(); // 0 -> clockwise, 1-> counterclockwise 
+    direction = Serial1.parseInt();
 
-// execute motor instructions (10 pulses per configuration)
-      for(int i = 0; i < 10; i++){
-        motorControl(rpos, cpos, direction, speed);
-      }
+// execute motor instructions (5 pulses per configuration)
+    for(int i = 0; i < 5; i++){
+      motorControl(rpos, cpos, direction, speed);
+    }
   }
 
 }
 
-/* TO DO: implement limit switch operation in motor control function to keep panel in bounds */
 void motorControl(int rpos, int cpos, int Direction, int Delay){
+// for direction: 0 -> clockwise, 1-> counterclockwise 
 
   digitalWrite(MotorArr[rpos][cpos].DirPin, Direction);
 
