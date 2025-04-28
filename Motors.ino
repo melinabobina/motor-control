@@ -147,7 +147,7 @@ void homePanels(void){
   // homing
   bool allHomed = false;
   const int backOffSteps = 10; // how many steps to back off
-  const int backOffPulseDelay = 1500; // 
+  const int backOffSpeed = 1500; // 
 
   while (!allHomed){
     allHomed = true;
@@ -170,9 +170,9 @@ void homePanels(void){
             digitalWrite(MotorArr[i][j].DirPin, LOW); // move down
             for (int step = 0; step < backOffSteps; step++) {
               digitalWrite(MotorArr[i][j].PulPin, HIGH);
-              delayMicroseconds(backOffPulseDelay);
+              delayMicroseconds(backOffSpeed);
               digitalWrite(MotorArr[i][j].PulPin, LOW);
-              delayMicroseconds(backOffPulseDelay);
+              delayMicroseconds(backOffSpeed);
             }
           } else {
             allHomed = false; // not all panels are homed yet 
