@@ -123,11 +123,9 @@ void loop(){
 // execute motor instructions (5 pulses per configuration)
     for(int i = 0; i < 5; i++){
       if (digitalRead(MotorArr[rpos][cpos].LimitPin) == HIGH){
-        int oppositedirection = !direction;
-        motorControl(rpos, cpos, oppositedirection, speed);
-      } else {
-        motorControl(rpos, cpos, direction, speed);
+            direction = !direction;
       } 
+      motorControl(rpos, cpos, direction, speed);    
     }
   }
 } 
